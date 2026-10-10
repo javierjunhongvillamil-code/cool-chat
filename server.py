@@ -11,8 +11,11 @@ def messages():
 
 @app.route("/api/chat",methods = ["POST"])
 def chat():
+
+    username = request.json['username']
     message = request.json['message']
-    chat_messages.append(message)
+    chat_messages.append({"username" : username,
+              "message" : message})
     return {"messages":chat_messages}
 
 @app.route("/")
@@ -23,16 +26,13 @@ def hello_world():
     <input> 
     <button onclick="sendMessage()">send </button>
     <script>
+  const username = prompt("what is your user name?")
 
   const output = document.querySelector("div")
 
 
     async function sendMessage(){
     const message = document.querySelector("input")
-      console.log("user input", message.value)
-      
-
-
 
   const rawResponse = await fetch('api/chat', {
     method: 'POST',
@@ -40,13 +40,13 @@ def hello_world():
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({message:message.value})
+    body: JSON.stringify({username,message:message.value})
   });
   const content = await rawResponse.json();
     output.textContent = ""
   console.log(content);
     for (const message of content.messages){
-      output.innerHTML += `<div>${message}</div>`
+      output.innerHTML += `<div>${message.username}s-${message.message}</div>`
     }
     }
 
@@ -56,11 +56,11 @@ def hello_world():
      output.textContent = ""
       console.log(content);
         for (const message of content.messages){
-          output.innerHTML += `<div>${message}</div>`
+          output.innerHTML += `<div>${message.username}-${message.message}</div>`
         }
     }, 1000)
 
     </script>
     """
 
-app.run(port = 5001,debug = True)
+app.run()
