@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask,request, render_template
 
 app = Flask(__name__)
 chat_messages = []
@@ -20,7 +20,7 @@ def chat():
 
 @app.route("/")
 def hello_world():
-    return r"""
-    """
+    return render_template("index.html")
+
 if __name__ == "__main__": 
     app.run(port = 5001, debug = True)
